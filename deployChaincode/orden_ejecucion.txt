@@ -1,0 +1,18 @@
+Dado que hemos definido que ambas organizaciones deban aprobar el smart contract antes de subirlo a la red, se ha divido el script en varios. 
+Así pues, tenemos en primer lugar el script deployOrg1_GO.sh, el cual crea el chaincode, lo instala y lo aprueba desde la ORG1. Después, antes
+de hacer commit, se necesita la aprobación de ORG2, por lo que se debe ejecutar deployOrg2_GO.sh. Una vez ambos aprueben el chaincode, se deberá seguir
+con deployOrg1_2_GO.sh el cual realiza el commit del chaincode. Luego, se ha separado el invoke de ORG1 en invokeOrg1_GO.sh y se terminará con
+deployOrg2_2_GO que hace el invoke en ORG2 junto con las trasacciones definidas.
+
+1. deployOrg1_GO.sh
+2. deployOrg2_GO.sh
+3. deployOrg1_2_GO.sh
+4. invokeOrg1_GO.sh
+5. deployOrg2_2_GO.sh
+
+
+para que funcione he cambiado las politicas, de any a majority. Despues he hecho lo de arriba y en commiting como he aprobado con dos peers, tengo que poner al menos
+un peer de ambas organizaciones en commiting. Después he puesto el export para los certificados TLS de dicho peer org2 en deployOrg1_2_GO.sh (el que hace committing).
+
+
+Cuando quieras hacer transacciones, debes quitar el lyfe noseque, o directamente crear tu propio fichero con las transacciones.

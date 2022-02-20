@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 
 chaincodeInfo() {
-  export CHANNEL_NAME="mychannel"
+   export CHANNEL_NAME="mychannel"
   export CC_RUNTIME_LANGUAGE="golang"
   export CC_VERSION="1"
-  export CC_SRC_PATH=../chaincodes/golang
-  export CC_NAME="fabcargo"
+  export CC_SRC_PATH=../chaincodes/ipfs
+  export CC_NAME="ipfschaincode"
   export CC_SEQUENCE="1"
 
 }
+
 preSetupGO() {
   echo Vendoring Go dependencies ...
+  export PATH=$PATH:/usr/local/go/bin
   pushd ../chaincodes/golang
   GO111MODULE=on go mod vendor
   popd
@@ -90,9 +92,6 @@ lifecycleCommands() {
   queryInstalled
   sleep 2
   approveForMyOrg2
-  sleep 2
-  checkCommitReadyness
-
 }
 getInstallChaincodes() {
 
@@ -103,6 +102,3 @@ preSetupGO
 chaincodeInfo
 setGlobalsForPeer0Org2
 lifecycleCommands
-insertTransaction
-readTransaction
-getInstallChaincodes

@@ -4,13 +4,16 @@ chaincodeInfo() {
   export CHANNEL_NAME="mychannel"
   export CC_RUNTIME_LANGUAGE="golang"
   export CC_VERSION="1"
-  export CC_SRC_PATH=../chaincodes/golang
-  export CC_NAME="fabcargo"
+  export CC_SRC_PATH=../chaincodes/ipfs
+  export CC_NAME="ipfschaincode"
   export CC_SEQUENCE="1"
 
 }
+
+
 preSetupGO() {
   echo Vendoring Go dependencies ...
+  export PATH=$PATH:/usr/local/go/bin
   pushd ../chaincodes/golang
   GO111MODULE=on go mod vendor
   popd
@@ -65,34 +68,6 @@ getblock() {
   peer channel getinfo -c mychannel -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA
 }
 
-checkCommitReadyness() {
-
-  peer lifecycle chaincode checkcommitreadiness --channelID $CHANNEL_NAME --name ${CC_NAME} --sequence ${CC_SEQUENCE} --version ${CC_VERSION} --init-required --output json
-
-}
-commitChaincodeDefination() {
-
-  peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name ${CC_NAME} --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA --sequence ${CC_SEQUENCE} --version ${CC_VERSION} --init-required
-
-}
-
-queryCommitted() {
-
-  peer lifecycle chaincode querycommitted --channelID $CHANNEL_NAME --name ${CC_NAME} --output json
-
-}
-chaincodeInvokeInit() {
-
-  peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile $ORDERER_CA --channelID $CHANNEL_NAME -n ${CC_NAME} --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA --isInit -c '{"function": "initLedger","Args":[]}'
-
-}
-
-insertTransaction() {
-
-  peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n ${CC_NAME} --peerAddresses localhost:7051 --tlsRootCertFiles $PEER0_ORG1_CA -c '{"function": "createCar", "Args":["CAR101","Honda","City","White", "CM"]}'
-
-  sleep 2
-}
 readTransaction() {
   echo "Reading a transaction"
 
@@ -112,27 +87,10 @@ lifecycleCommands() {
   queryInstalled
   sleep 2
   approveForMyOrg1
-  sleep 2
-  getblock
-  checkCommitReadyness
-  sleep 2
-  commitChaincodeDefination
-  sleep 2
-  queryCommitted
-  sleep 2
-  chaincodeInvokeInit
-  sleep 10
-}
-getInstallChaincodes() {
-
-  peer lifecycle chaincode queryinstalled
-
 }
 
 preSetupGO
 chaincodeInfo
 setGlobalsForPeer0Org1
 lifecycleCommands
-insertTransaction
-readTransaction
-getInstallChaincodes
+
